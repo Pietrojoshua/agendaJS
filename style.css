@@ -1,0 +1,248 @@
+/* ========================
+   Fonte e corpo
+======================== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e0f2ff; /* azul claro */
+    color: #111;
+    padding: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.agenda {
+    max-width: 650px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 30px 35px;
+    border-radius: 14px;
+    box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
+}
+
+/* ========================
+   Título
+======================== */
+.titulo-agenda {
+    text-align: center;
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #0077b6;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+/* ========================
+   Inputs e botão
+======================== */
+.input-group {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+input[type="text"], input[type="date"] {
+    padding: 14px 18px;
+    font-size: 1em;
+    border-radius: 10px;
+    border: 1px solid #aaa;
+    transition: all 0.3s;
+}
+
+input[type="text"]:focus, input[type="date"]:focus {
+    outline: none;
+    border-color: #0077b6;
+    box-shadow: 0 0 6px rgba(0,119,182,0.4);
+}
+
+.input-group input[type="date"].input-data {
+    cursor: pointer;
+}
+
+/* Botão adicionar tarefa */
+button {
+    padding: 14px 30px;
+    background-color: #0077b6;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+button:hover {
+    background-color: #023e8a;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+/* ========================
+   Switch de tema
+======================== */
+.switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+    gap: 12px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #ccc;
+    border-radius: 26px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: 0.4s;
+}
+
+.slider::before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background-color: #e63946; /* vermelho escuro */
+}
+
+input:checked + .slider::before {
+    transform: translateX(24px);
+}
+
+.switch-label {
+    font-weight: bold;
+}
+
+/* ========================
+   Lista de tarefas
+======================== */
+#Lista-De-Tarefas > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #caf0f8;
+    margin: 10px 0;
+    padding: 14px 18px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    position: relative;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#Lista-De-Tarefas > div:hover {
+    transform: translateY(-2px);
+}
+
+/* Botão apagar */
+#Lista-De-Tarefas button {
+    background-color: #e63946;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+#Lista-De-Tarefas button:hover {
+    background-color: #9d0208;
+    transform: translateY(-2px);
+}
+
+/* ========================
+   Status de datas
+======================== */
+#Lista-De-Tarefas > div[data-status]::before {
+    content: attr(data-status);
+    font-size: 0.85em;
+    font-weight: bold;
+    margin-right: 12px;
+}
+
+.hoje { border-left: 6px solid #ffb703; }
+.futuro-curto { border-left: 6px solid #52b788; }
+.futuro-medio { border-left: 6px solid #2d6a4f; }
+.futuro-longo { border-left: 6px solid #1b4332; }
+.futuro-ano { border-left: 6px solid #081c15; }
+
+.passado-curto { border-left: 6px solid #f94144; }
+.passado-medio { border-left: 6px solid #c1121f; }
+.passado-longo { border-left: 6px solid #8b0000; }
+.passado-ano { border-left: 6px solid #610000; }
+
+#Lista-De-Tarefas > div[data-data]::after {
+    content: " (" attr(data-data) ")";
+    font-size: 0.82em;
+    color: #555;
+    margin-left: 6px;
+}
+
+/* ========================
+   Dark mode
+======================== */
+body.dark {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+}
+
+body.dark .agenda {
+    background-color: #2a2a2a;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.5);
+}
+
+body.dark button {
+    background-color: #d00000;
+}
+
+body.dark button:hover {
+    background-color: #9d0208;
+}
+
+body.dark #Lista-De-Tarefas > div {
+    background-color: #3a3a3a;
+}
+
+/* ========================
+   Responsividade
+======================== */
+@media (max-width: 600px){
+    .input-group {
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    #Lista-De-Tarefas > div {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #Lista-De-Tarefas > div button {
+        margin-top: 10px;
+    }
+}

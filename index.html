@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="PT-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Agenda</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="agenda">
+        <h1>Minha Agenda</h1>
+
+        <!-- Inputs e botão -->
+        <div class="input-group">
+            <input id="tarefa" type="text" placeholder="Insira aqui sua tarefa">
+            <input id="seleciona-data" type="date">
+            <button onclick="adicionarTarefa()">Adicionar Tarefa</button>
+        </div>
+
+        <!-- Switch tema -->
+        <div class="switch-container">
+            <label class="switch">
+                <input type="checkbox" id="toggleTema" onclick="alternarTema()">
+                <span class="slider"></span>
+            </label>
+            <span class="switch-label">Modo Escuro</span>
+        </div>
+
+        <!-- Lista de tarefas -->
+        <div id="Lista-De-Tarefas"></div>
+    </div>
+
+<script>
+let afazeres = JSON.parse(localStorage.getItem("afazeres")) || [];
+
+// Salva no localStorage
+const salvarTarefa = () => localStorage.setItem("afazeres", JSON.stringify(afazeres));
+
+// Função para calcular status da data (correção do bug do dia anterior)
+function calcularStatusData(dataStr) {
+    const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+    
+    // Corrige bug do dia anterior
+    const partes = dataStr.split("-"); // "YYYY-MM-DD"
+    const tarefaData = new Date(partes[0], partes[1]-1, partes[2]);
+    
+    const hoje = new Date();
+    hoje.setHours(0,0,0,0);
+    tarefaData.setHours(0,0,0,0);
+
+    let diff = Math.round((tarefaData - hoje)/(1000*60*60*24));
+    let status = "";
+    let texto = "";
+
+    if(diff === 0){
+        status = "hoje"; texto = "Hoje";
+    } else if(diff > 0 && diff < 7){
+        status = "futuro-curto"; texto = `Faltam ${diff} dia${diff>1?"s":""}`;
+    } else if(diff >=7 && diff < 30){
+        status = "futuro-medio"; texto = `Faltam ${Math.floor(diff/7)} semana${Math.floor(diff/7)>1?"s":""}`;
+    } else if(diff >=30 && diff < 365){
+        status = "futuro-longo"; texto = `Faltam ${Math.floor(diff/30)} mês${Math.floor(diff/30)>1?"es":""}`;
+    } else if(diff >= 365){
+        status = "futuro-ano"; texto = `Faltam ${Math.floor(diff/365)} ano${Math.floor(diff/365)>1?"s":""}`;
+    } else if(diff < 0 && diff > -7){
+        status = "passado-curto"; texto = `Já foi ${Math.abs(diff)} dia${Math.abs(diff)>1?"s":""} atrás`;
+    } else if(diff <= -7 && diff > -30){
+        status = "passado-medio"; texto = `Já foi ${Math.floor(Math.abs(diff)/7)} semana${Math.floor(Math.abs(diff)/7)>1?"s":""} atrás`;
+    } else if(diff <= -30 && diff > -365){
+        status = "passado-longo"; texto = `Já foi ${Math.floor(Math.abs(diff)/30)} mês${Math.floor(Math.abs(diff)/30)>1?"es":""} atrás`;
+    } else if(diff <= -365){
+        status = "passado-ano"; texto = `Já foi ${Math.floor(Math.abs(diff)/365)} ano${Math.floor(Math.abs(diff)/365)>1?"s":""} atrás`;
+    }
+
+    return {status, texto, dataExtenso: `${tarefaData.getDate()} de ${meses[tarefaData.getMonth()]} de ${tarefaData.getFullYear()}`};
+}
+
+// Renderiza tarefas
+function renderizar() {
+    const lista = document.getElementById("Lista-De-Tarefas");
+    lista.innerHTML = "";
+
+    afazeres.forEach(tarefa => {
+        const elemento = document.createElement('div');
+        elemento.textContent = tarefa.nome;
+
+        if(tarefa.data){
+            const info = calcularStatusData(tarefa.data);
+            elemento.classList.add(info.status);
+            elemento.setAttribute("data-status", info.texto);
+            elemento.setAttribute("data-data", info.dataExtenso);
+        }
+
+        const botaoApagar = document.createElement("button");
+        botaoApagar.innerText = "Apagar";
+        botaoApagar.onclick = () => apagarTarefa(tarefa.id);
+
+        elemento.appendChild(botaoApagar);
+        lista.appendChild(elemento);
+    });
+}
+
+// Adicionar tarefa
+function adicionarTarefa(){
+    const campoTarefa = document.getElementById("tarefa");
+    const campoData = document.getElementById("seleciona-data");
+    if(!campoTarefa.value) return;
+
+    const id = Date.now();
+    afazeres.push({nome: campoTarefa.value, data: campoData.value, id});
+    salvarTarefa();
+    renderizar();
+
+    campoTarefa.value = "";
+    campoData.value = "";
+}
+
+// Apagar tarefa
+function apagarTarefa(id){
+    afazeres = afazeres.filter(t => t.id !== id);
+    salvarTarefa();
+    renderizar();
+}
+
+// Alternar tema claro/escuro
+function alternarTema() {
+    document.body.classList.toggle("dark");
+}
+
+// Inicializa
+renderizar();
+</script>
+</body>
+</html>
